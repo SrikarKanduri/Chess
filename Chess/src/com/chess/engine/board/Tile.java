@@ -1,39 +1,67 @@
 package com.chess.engine.board;
 
-import com.chess.engine.piece.Piece;
+import com.chess.engine.pieces.Piece;
 
-abstract class Tile
+import java.util.*;
+
+public abstract class Tile
 {
-    int tilePosition;
-    Tile(int tilePosition)
+    protected final int tilePosition;
+
+    private static final Map<Integer,EmptyTile> EMPTY_TILES = createAllPossibleEmptyTiles();
+
+    private static Map<Integer,EmptyTile> createAllPossibleEmptyTiles() {
+        final Map<Integer,EmptyTile> emptyTileMap = new HashMap<>();
+        for(int i = 0; i < 64; i++){
+            emptyTileMap.put(i,new EmptyTile(i));
+        }
+        return Collections.unmodifiableMap(emptyTileMap);
+    }
+
+    public static Tile createTile(final int tilePosition, final Piece piece){
+        return piece != null? new OccupiedTile(tilePosition,piece) : EMPTY_TILES.get(tilePosition);
+    }
+
+    private Tile(int tilePosition)
     {
         this.tilePosition = tilePosition;
     }
-    abstract Piece getPiece(int tilePosition);
-}
 
-abstract class occupiedTile extends Tile{
-    Piece piece;
-    occupiedTile(int position, Piece piece)
-    {
-        super(position);
-        this.tilePosition = position;
-        this.piece = piece;
+    public abstract boolean isTileOccupied();
+    public abstract Piece getPiece(int tilePosition);
+
+    public static final class EmptyTile extends Tile {
+        private EmptyTile(final int position) {
+            super(position);
+        }
+
+        @Override
+        public boolean isTileOccupied() {
+            return false;
+        }
+
+        @Override
+        public Piece getPiece(int position) {
+            return null;
+        }
     }
-    Piece getPiece(int position)
-    {
-        return piece;
+
+    public static final class OccupiedTile extends Tile {
+    private final Piece pieceOnTile;
+
+    private OccupiedTile(int position, Piece pieceOnTile) {
+        super(position);
+        this.pieceOnTile = pieceOnTile;
+    }
+
+    @Override
+    public boolean isTileOccupied() {
+        return true;
+    }
+
+    @Override
+    public Piece getPiece(int position) {
+        return this.pieceOnTile;
     }
 }
-
-abstract class unoccupiedTile extends Tile{
-    unoccupiedTile(int position)
-    {
-        super(position);
-        this.tilePosition = position;
-    }
-    Piece getPiece(int position)
-    {
-        return null;
-    }
 }
