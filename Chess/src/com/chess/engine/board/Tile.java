@@ -1,5 +1,6 @@
 package com.chess.engine.board;
 
+import com.chess.engine.BoardUtils;
 import com.chess.engine.pieces.Piece;
 
 import java.util.*;
@@ -12,7 +13,7 @@ public abstract class Tile
 
     private static Map<Integer,EmptyTile> createAllPossibleEmptyTiles() {
         final Map<Integer,EmptyTile> emptyTileMap = new HashMap<>();
-        for(int i = 0; i < 64; i++){
+        for(int i = 0; i < BoardUtils.NUM_TILES; i++){
             emptyTileMap.put(i,new EmptyTile(i));
         }
         return Collections.unmodifiableMap(emptyTileMap);
@@ -28,7 +29,7 @@ public abstract class Tile
     }
 
     public abstract boolean isTileOccupied();
-    public abstract Piece getPiece(int tilePosition);
+    public abstract Piece getPiece();
 
     public static final class EmptyTile extends Tile {
         private EmptyTile(final int position) {
@@ -41,7 +42,7 @@ public abstract class Tile
         }
 
         @Override
-        public Piece getPiece(int position) {
+        public Piece getPiece() {
             return null;
         }
     }
@@ -49,7 +50,7 @@ public abstract class Tile
     public static final class OccupiedTile extends Tile {
     private final Piece pieceOnTile;
 
-    private OccupiedTile(int position, Piece pieceOnTile) {
+    private OccupiedTile(final int position, final Piece pieceOnTile) {
         super(position);
         this.pieceOnTile = pieceOnTile;
     }
@@ -60,8 +61,8 @@ public abstract class Tile
     }
 
     @Override
-    public Piece getPiece(int position) {
-        return this.pieceOnTile;
+    public Piece getPiece() {
+        return pieceOnTile;
     }
 }
 }

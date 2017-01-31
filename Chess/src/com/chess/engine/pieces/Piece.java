@@ -10,10 +10,12 @@ public abstract class Piece {
 
     protected final int piecePosition;
     protected final PieceColor pieceColor;
+    protected final boolean isFirstMove;
 
     Piece(final int piecePosition, final PieceColor pieceColor){
         this.piecePosition = piecePosition;
         this.pieceColor = pieceColor;
+        this.isFirstMove = false;
     }
 
     public PieceColor getPieceColor(){

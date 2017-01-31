@@ -12,22 +12,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class Knight extends Piece {
+public class King extends Piece {
+    private final static int[] MOVE_OFFSETS= { -1, -7, -8, -9, 9, 8, 7, 1};
 
-    private final static int[] MOVE_OFFSETS= { -17, -15, -10, -6, 6, 10, 15, 17};
-    private Knight(int piecePosition, PieceColor pieceColor) {
+    King(int piecePosition, PieceColor pieceColor) {
         super(piecePosition, pieceColor);
     }
 
     @Override
-    public Collection<Move> calculateLegalMoves(final Board board) {
+    public Collection<Move> calculateLegalMoves(Board board) {
         final List<Move> legalMoves = new ArrayList<>();
         for(final int currentOffset : MOVE_OFFSETS){
             int destinationPosition = piecePosition + currentOffset;
             if(BoardUtils.validDestinationPosition(destinationPosition)) {
                 if(isFirstColumnExclusion(this.piecePosition, currentOffset) ||
-                        isSecondColumnExclusion(this.piecePosition, currentOffset) ||
-                        isSeventhColumnExclusion(this.piecePosition, currentOffset) ||
                         isEighthColumnExclusion(this.piecePosition, currentOffset)) {
                     continue;
                 }
@@ -48,16 +46,10 @@ public class Knight extends Piece {
     }
 
     public static boolean isFirstColumnExclusion(final int currentPosition, final int currentOffset){
-        return BoardUtils.FIRST_COLUMN[currentPosition] && (currentOffset == -17 || currentOffset == -10 || currentOffset == 6 || currentOffset == 15);
-    }
-    public static boolean isSecondColumnExclusion(final int currentPosition, final int currentOffset){
-        return BoardUtils.SECOND_COLUMN[currentPosition] && (currentOffset == -10 || currentOffset == 6);
-    }
-    public static boolean isSeventhColumnExclusion(final int currentPosition, final int currentOffset){
-        return BoardUtils.SEVENTH_COLUMN[currentPosition] && (currentOffset == 10 || currentOffset ==-6);
-    }
-    public static boolean isEighthColumnExclusion(final int currentPosition, final int currentOffset){
-        return BoardUtils.EIGHTH_COLUMN[currentPosition] && (currentOffset == 17 || currentOffset == 10 || currentOffset == -6 || currentOffset == -15);
+        return BoardUtils.FIRST_COLUMN[currentPosition] && (currentOffset == -1 || currentOffset == -9 || currentOffset == 7);
     }
 
+    public static boolean isEighthColumnExclusion(final int currentPosition, final int currentOffset){
+        return BoardUtils.EIGHTH_COLUMN[currentPosition] && (currentOffset == 1 || currentOffset == 9 || currentOffset == -7);
+    }
 }
