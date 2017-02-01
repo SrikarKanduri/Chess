@@ -15,7 +15,7 @@ import java.util.List;
 public class King extends Piece {
     private final static int[] MOVE_OFFSETS= { -1, -7, -8, -9, 9, 8, 7, 1};
 
-    King(int piecePosition, PieceColor pieceColor) {
+    public King(PieceColor pieceColor, int piecePosition) {
         super(piecePosition, pieceColor);
     }
 
@@ -51,5 +51,9 @@ public class King extends Piece {
 
     public static boolean isEighthColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.EIGHTH_COLUMN[currentPosition] && (currentOffset == 1 || currentOffset == 9 || currentOffset == -7);
+    }
+    @Override
+    public String toString(){
+        return "K";
     }
 }

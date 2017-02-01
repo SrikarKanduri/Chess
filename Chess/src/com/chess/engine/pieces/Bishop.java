@@ -15,7 +15,7 @@ import java.util.List;
 public class Bishop extends Piece{
     private final static int[] MOVE_OFFSETS= {-7, -9, 7, 9};
 
-    Bishop(int piecePosition, PieceColor pieceColor) {
+    public Bishop(PieceColor pieceColor, int piecePosition) {
         super(piecePosition, pieceColor);
     }
 
@@ -54,5 +54,9 @@ public class Bishop extends Piece{
     }
     public static boolean isEighthColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.EIGHTH_COLUMN[currentPosition] && (currentOffset == 9 || currentOffset == -7);
+    }
+    @Override
+    public String toString(){
+        return "B";
     }
 }

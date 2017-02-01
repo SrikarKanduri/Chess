@@ -15,7 +15,7 @@ import java.util.List;
 public class Pawn extends Piece {
     private final static int[] MOVE_OFFSETS = {7, 8, 9, 16};
 
-    Pawn(int piecePosition, PieceColor pieceColor) {
+    public Pawn(PieceColor pieceColor, int piecePosition) {
         super(piecePosition, pieceColor);
     }
 
@@ -63,6 +63,10 @@ public class Pawn extends Piece {
             }
         }
         return Collections.unmodifiableList(legalMoves);
+    }
+    @Override
+    public String toString(){
+        return "P";
     }
 }
 

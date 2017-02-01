@@ -15,7 +15,7 @@ import java.util.List;
 public class Knight extends Piece {
 
     private final static int[] MOVE_OFFSETS= { -17, -15, -10, -6, 6, 10, 15, 17};
-    private Knight(int piecePosition, PieceColor pieceColor) {
+    public Knight(PieceColor pieceColor, int piecePosition) {
         super(piecePosition, pieceColor);
     }
 
@@ -60,4 +60,8 @@ public class Knight extends Piece {
         return BoardUtils.EIGHTH_COLUMN[currentPosition] && (currentOffset == 17 || currentOffset == 10 || currentOffset == -6 || currentOffset == -15);
     }
 
+    @Override
+    public String toString(){
+        return "N";
+    }
 }

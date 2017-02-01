@@ -15,10 +15,20 @@ public abstract class Move {
         this.destinationCoordinate = destinationCoordinate;
     }
 
+    public int getDestinationCoordinate(){
+        return this.destinationCoordinate;
+    }
+
+    public abstract Board execute();
+
     public static final class NonattackingMove extends Move {
 
         public NonattackingMove(final Board board, final Piece movedPiece, final int destinationCoordinate) {
             super(board, movedPiece, destinationCoordinate);
+        }
+        @Override
+        public Board execute(){
+            return null;
         }
     }
 
@@ -27,6 +37,10 @@ public abstract class Move {
         public AttackingMove(final Board board, final Piece movedPiece, final int destinationCoordinate, Piece attackedPiece) {
             super(board, movedPiece, destinationCoordinate);
             this.attackedPiece = attackedPiece;
+        }
+        @Override
+        public Board execute(){
+            return null;
         }
     }
 }

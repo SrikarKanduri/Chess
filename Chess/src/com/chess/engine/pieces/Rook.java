@@ -15,7 +15,7 @@ import java.util.List;
 public class Rook extends Piece{
     private final static int[] MOVE_OFFSETS= {-8, -1, 1, 8};
 
-    Rook(int piecePosition, PieceColor pieceColor) {
+    public Rook(PieceColor pieceColor, int piecePosition) {
         super(piecePosition, pieceColor);
     }
 
@@ -54,5 +54,9 @@ public class Rook extends Piece{
     }
     public static boolean isEighthColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.EIGHTH_COLUMN[currentPosition] && (currentOffset == 1);
+    }
+    @Override
+    public String toString(){
+        return "R";
     }
 }

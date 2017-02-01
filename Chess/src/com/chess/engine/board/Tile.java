@@ -10,7 +10,7 @@ public abstract class Tile
     protected final int tilePosition;
 
     private static final Map<Integer,EmptyTile> EMPTY_TILES = createAllPossibleEmptyTiles();
-
+    //Why create empty tiles?
     private static Map<Integer,EmptyTile> createAllPossibleEmptyTiles() {
         final Map<Integer,EmptyTile> emptyTileMap = new HashMap<>();
         for(int i = 0; i < BoardUtils.NUM_TILES; i++){
@@ -37,6 +37,12 @@ public abstract class Tile
         }
 
         @Override
+        public String toString()
+        {
+            return "-";
+        }
+
+        @Override
         public boolean isTileOccupied() {
             return false;
         }
@@ -53,6 +59,12 @@ public abstract class Tile
     private OccupiedTile(final int position, final Piece pieceOnTile) {
         super(position);
         this.pieceOnTile = pieceOnTile;
+    }
+
+    @Override
+    public String toString()
+    {
+        return getPiece().getPieceColor().isBlack()? getPiece().toString().toLowerCase() : getPiece().toString();
     }
 
     @Override
