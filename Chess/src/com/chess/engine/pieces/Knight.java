@@ -16,7 +16,7 @@ public class Knight extends Piece {
 
     private final static int[] MOVE_OFFSETS= { -17, -15, -10, -6, 6, 10, 15, 17};
     public Knight(PieceColor pieceColor, int piecePosition) {
-        super(piecePosition, pieceColor);
+        super(PieceType.KNIGHT,piecePosition, pieceColor,true);
     }
 
     @Override
@@ -62,6 +62,11 @@ public class Knight extends Piece {
 
     @Override
     public String toString(){
-        return "N";
+        return this.pieceType.toString();
+    }
+
+    @Override
+    public Knight movePiece(final Move move) {
+        return new Knight(move.getMovedPiece().getPieceColor(), move.getDestinationCoordinate());
     }
 }

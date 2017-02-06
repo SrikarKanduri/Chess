@@ -6,6 +6,7 @@ import com.chess.engine.board.Board;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Move.*;
 import com.chess.engine.board.Tile;
+import com.chess.engine.player.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,7 +17,7 @@ public class Bishop extends Piece{
     private final static int[] MOVE_OFFSETS= {-7, -9, 7, 9};
 
     public Bishop(PieceColor pieceColor, int piecePosition) {
-        super(piecePosition, pieceColor);
+        super(PieceType.BISHOP,piecePosition, pieceColor,true);
     }
 
     @Override
@@ -49,6 +50,7 @@ public class Bishop extends Piece{
 
         return Collections.unmodifiableList(legalMoves);
     }
+
     public static boolean isFirstColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.FIRST_COLUMN[currentPosition] && (currentOffset == -9 || currentOffset == 7);
     }
@@ -57,6 +59,11 @@ public class Bishop extends Piece{
     }
     @Override
     public String toString(){
-        return "B";
+        return this.pieceType.toString();
+    }
+
+    @Override
+    public Bishop movePiece(final Move move) {
+        return new Bishop(move.getMovedPiece().getPieceColor(), move.getDestinationCoordinate());
     }
 }

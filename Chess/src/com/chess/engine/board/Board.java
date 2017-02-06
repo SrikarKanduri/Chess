@@ -25,7 +25,7 @@ public class Board {
         final Collection<Move> blackLegalMoves = calculateLegalMoves(this.blackPieces);
         this.whitePlayer = new WhitePlayer(this, whiteLegalMoves, blackLegalMoves);
         this.blackPlayer = new BlackPlayer(this, blackLegalMoves, whiteLegalMoves);
-        this.currentPlayer = null;
+        this.currentPlayer = builder.nextMoveMaker.choosePlayer(this.whitePlayer, this.blackPlayer);
     }
 
     private static List<Tile> createGameBoard(Builder builder) {
@@ -140,9 +140,16 @@ public class Board {
         return builder.build();
     }
 
+    public Collection<Move> getAllLegalMoves() {
+        List<Move> allMoves = new ArrayList<>(this.whitePlayer.getLegalMoves());
+        allMoves.addAll(this.blackPlayer.getLegalMoves());
+        return Collections.unmodifiableList(allMoves);
+    }
+
     public static class Builder{
         Map<Integer, Piece> boardConfig;
         PieceColor nextMoveMaker;
+        Pawn enpassantPawn;
 
         public Builder(){
             this.boardConfig = new HashMap<>();
@@ -163,6 +170,10 @@ public class Board {
         public Board build()
         {
             return new Board(this);
+        }
+
+        public void setEnpassantPawn(Pawn enpassantPawn) {
+            this.enpassantPawn = enpassantPawn;
         }
     }
 }

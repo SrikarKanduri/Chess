@@ -6,6 +6,7 @@ import com.chess.engine.board.Board;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Move.*;
 import com.chess.engine.board.Tile;
+import com.chess.engine.player.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,7 +17,7 @@ public class King extends Piece {
     private final static int[] MOVE_OFFSETS= { -1, -7, -8, -9, 9, 8, 7, 1};
 
     public King(PieceColor pieceColor, int piecePosition) {
-        super(piecePosition, pieceColor);
+        super(PieceType.KING,piecePosition, pieceColor,true);
     }
 
     @Override
@@ -54,6 +55,11 @@ public class King extends Piece {
     }
     @Override
     public String toString(){
-        return "K";
+        return this.pieceType.toString();
+    }
+
+    @Override
+    public King movePiece(final Move move) {
+        return new King(move.getMovedPiece().getPieceColor(), move.getDestinationCoordinate());
     }
 }

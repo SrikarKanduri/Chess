@@ -16,7 +16,7 @@ public class Queen extends Piece{
     private final static int[] MOVE_OFFSETS= {-7, -8, -9, -1, 1, 7, 8, 9};
 
     public Queen(PieceColor pieceColor, int piecePosition) {
-        super(piecePosition, pieceColor);
+        super(PieceType.QUEEN,piecePosition, pieceColor,true);
     }
 
     @Override
@@ -56,6 +56,11 @@ public class Queen extends Piece{
     }
     @Override
     public String toString(){
-        return "Q";
+        return this.pieceType.toString();
     }
+    @Override
+    public Queen movePiece(final Move move) {
+        return new Queen(move.getMovedPiece().getPieceColor(), move.getDestinationCoordinate());
+    }
+
 }

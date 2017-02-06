@@ -16,7 +16,7 @@ public class Rook extends Piece{
     private final static int[] MOVE_OFFSETS= {-8, -1, 1, 8};
 
     public Rook(PieceColor pieceColor, int piecePosition) {
-        super(piecePosition, pieceColor);
+        super(PieceType.ROOK,piecePosition, pieceColor,true);
     }
 
     @Override
@@ -57,6 +57,10 @@ public class Rook extends Piece{
     }
     @Override
     public String toString(){
-        return "R";
+        return this.pieceType.toString();
+    }
+    @Override
+    public Rook movePiece(final Move move) {
+        return new Rook(move.getMovedPiece().getPieceColor(), move.getDestinationCoordinate());
     }
 }

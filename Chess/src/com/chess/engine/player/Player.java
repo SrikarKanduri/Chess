@@ -20,21 +20,23 @@ public abstract class Player {
     public Player(Board board, Collection<Move> legalMoves, Collection<Move> opponentMoves){
         this.playerKing = establishKing();
         this.board = board;
+        //Change after importing Guava
+        legalMoves.addAll(calculateKingCastles(legalMoves, opponentMoves));
         this.legalMoves = legalMoves;
         this.isInCheck = !Player.calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentMoves).isEmpty();
     }
 
     protected King establishKing(){
         for(final Piece piece : getActivePieces()){
-            if(piece.toString().equals("K"))
+            if(piece.getPieceType().isKing())
                 return (King) piece;
         }
         throw new RuntimeException("Your code broke!");
     }
 
-    private static Collection<Move> calculateAttacksOnTile(int piecePosition, Collection<Move> moves) {
+    protected static Collection<Move> calculateAttacksOnTile(int piecePosition, Collection<Move> opponentMoves) {
         final List<Move> attackMoves = new ArrayList<>();
-        for(final Move move : moves){
+        for(final Move move : opponentMoves){
             if(piecePosition == move.getDestinationCoordinate()){
                 attackMoves.add(move);
             }
@@ -98,7 +100,8 @@ public abstract class Player {
         return new MoveTransition(transitionBoard, move, MoveStatus.DONE);
     }
 
-    protected abstract Collection<Piece> getActivePieces();
-    protected abstract PieceColor getPieceColor();
-    protected abstract Player getOpponent();
+    public abstract Collection<Piece> getActivePieces();
+    public abstract PieceColor getPieceColor();
+    public abstract Player getOpponent();
+    protected abstract Collection<Move> calculateKingCastles(Collection<Move> playerLegals, Collection<Move> opponentLegals);
 }
