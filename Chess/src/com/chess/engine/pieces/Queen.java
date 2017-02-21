@@ -6,17 +6,21 @@ import com.chess.engine.board.Board;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Move.*;
 import com.chess.engine.board.Tile;
+import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class Queen extends Piece{
     private final static int[] MOVE_OFFSETS= {-7, -8, -9, -1, 1, 7, 8, 9};
 
-    public Queen(PieceColor pieceColor, int piecePosition) {
+    public Queen(final PieceColor pieceColor, final int piecePosition) {
         super(PieceType.QUEEN,piecePosition, pieceColor,true);
+    }
+
+    public Queen(final PieceColor pieceColor, final int piecePosition, final boolean isFirstMove) {
+        super(PieceType.QUEEN,piecePosition, pieceColor,isFirstMove);
     }
 
     @Override
@@ -32,7 +36,7 @@ public class Queen extends Piece{
                 if (BoardUtils.validDestinationPosition(destinationPosition)) {
                     final Tile destinationTile = board.getTile(destinationPosition);
                     if (!destinationTile.isTileOccupied()) {
-                        legalMoves.add(new NonattackingMove(board, this, destinationPosition));
+                        legalMoves.add(new MajorMove(board, this, destinationPosition));
                     } else {
                         final Piece destinationPiece = destinationTile.getPiece();
                         final PieceColor destinationPieceColor = destinationPiece.getPieceColor();
@@ -46,7 +50,7 @@ public class Queen extends Piece{
             }
         }
 
-        return Collections.unmodifiableList(legalMoves);
+        return ImmutableList.copyOf(legalMoves);
     }
     public static boolean isFirstColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.FIRST_COLUMN[currentPosition] && (currentOffset == -9 || currentOffset == -1 ||currentOffset == 7);

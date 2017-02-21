@@ -1,14 +1,17 @@
 package com.chess.engine.board;
+
 import com.chess.engine.BoardUtils;
 import com.chess.engine.PieceColor;
 import com.chess.engine.pieces.*;
 import com.chess.engine.player.BlackPlayer;
 import com.chess.engine.player.Player;
 import com.chess.engine.player.WhitePlayer;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import java.util.*;
 
-public class Board {
+public final class Board {
 
     private final List<Tile> gameBoard;
     private final Collection<Piece> whitePieces;
@@ -19,35 +22,13 @@ public class Board {
 
     private Board(Builder builder){
         this.gameBoard = createGameBoard(builder);
-        this.whitePieces = calculateActivePieces(this.gameBoard, PieceColor.WHITE);
-        this.blackPieces = calculateActivePieces(this.gameBoard, PieceColor.BLACK);
+        this.whitePieces = calculateActivePieces(builder, PieceColor.WHITE);
+        this.blackPieces = calculateActivePieces(builder, PieceColor.BLACK);
         final Collection<Move> whiteLegalMoves = calculateLegalMoves(this.whitePieces);
         final Collection<Move> blackLegalMoves = calculateLegalMoves(this.blackPieces);
         this.whitePlayer = new WhitePlayer(this, whiteLegalMoves, blackLegalMoves);
-        this.blackPlayer = new BlackPlayer(this, blackLegalMoves, whiteLegalMoves);
+        this.blackPlayer = new BlackPlayer(this, whiteLegalMoves, blackLegalMoves);
         this.currentPlayer = builder.nextMoveMaker.choosePlayer(this.whitePlayer, this.blackPlayer);
-    }
-
-    private static List<Tile> createGameBoard(Builder builder) {
-        final Tile[] tiles = new Tile[BoardUtils.NUM_TILES];
-
-        for(int i=0;i<BoardUtils.NUM_TILES;i++)
-        {
-            tiles[i] = Tile.createTile(i, builder.boardConfig.get(i));
-        }
-        return Collections.unmodifiableList(Arrays.asList(tiles));
-    }
-
-    private Collection<Piece> calculateActivePieces(List<Tile> gameBoard, PieceColor pieceColor) {
-        final List<Piece> activePieces = new ArrayList<>();
-        for(final Tile tile: gameBoard){
-            if(tile.isTileOccupied()){
-                final Piece piece = tile.getPiece();
-                if(piece.getPieceColor() == pieceColor)
-                    activePieces.add(piece);
-            }
-        }
-        return Collections.unmodifiableList(activePieces);
     }
 
     public Collection<Piece> getWhitePieces(){
@@ -70,16 +51,29 @@ public class Board {
         return this.currentPlayer;
     }
 
-    @Override
-    public String toString()
+    public Tile getTile(final int tilePosition)
     {
-        final StringBuilder stringBuilder= new StringBuilder();
-        for(int i=0; i<BoardUtils.NUM_TILES; i++){
-            stringBuilder.append(String.format("%3s",gameBoard.get(i).toString()));
-            if((i+1) % BoardUtils.NUM_TILES_PER_ROW == 0)
-                stringBuilder.append("\n");
+        return gameBoard.get(tilePosition);
+    }
+
+    private static List<Tile> createGameBoard(final Builder builder) {
+        final Tile[] tiles = new Tile[BoardUtils.NUM_TILES];
+
+        for(int i=0;i<BoardUtils.NUM_TILES;i++)
+        {
+            tiles[i] = Tile.createTile(i, builder.boardConfig.get(i));
         }
-        return stringBuilder.toString();
+        return ImmutableList.copyOf(tiles);
+    }
+
+    private static Collection<Piece> calculateActivePieces(final Builder builder,
+                                                           final PieceColor pieceColor) {
+        final List<Piece> activePieces = new ArrayList<>();
+        for(final Piece piece: builder.boardConfig.values()){
+                if(piece.getPieceColor() == pieceColor)
+                    activePieces.add(piece);
+            }
+        return ImmutableList.copyOf(activePieces);
     }
 
     private Collection<Move> calculateLegalMoves(final Collection<Piece> pieces) {
@@ -87,18 +81,15 @@ public class Board {
         for(final Piece piece : pieces){
             legalMoves.addAll(piece.calculateLegalMoves(this));
         }
-        return Collections.unmodifiableList(legalMoves);
+        return ImmutableList.copyOf(legalMoves);
     }
 
-
-
-    public Tile getTile(final int tilePosition)
-    {
-        return gameBoard.get(tilePosition);
+    public Iterable<Move> getAllLegalMoves() {
+        return Iterables.unmodifiableIterable(Iterables.concat(this.whitePlayer.getLegalMoves(),
+                this.blackPlayer.getLegalMoves()));
     }
 
     public static Board createStandardBoard() {
-        //Creating instance of a static class?
         final Builder builder = new Builder();
         // Black Layout
         builder.setPiece(new Rook(PieceColor.BLACK, 0));
@@ -140,10 +131,16 @@ public class Board {
         return builder.build();
     }
 
-    public Collection<Move> getAllLegalMoves() {
-        List<Move> allMoves = new ArrayList<>(this.whitePlayer.getLegalMoves());
-        allMoves.addAll(this.blackPlayer.getLegalMoves());
-        return Collections.unmodifiableList(allMoves);
+    @Override
+    public String toString()
+    {
+        final StringBuilder stringBuilder= new StringBuilder();
+        for(int i=0; i<BoardUtils.NUM_TILES; i++){
+            stringBuilder.append(String.format("%3s",gameBoard.get(i).toString()));
+            if((i+1) % BoardUtils.NUM_TILES_PER_ROW == 0)
+                stringBuilder.append("\n");
+        }
+        return stringBuilder.toString();
     }
 
     public static class Builder{
@@ -155,25 +152,22 @@ public class Board {
             this.boardConfig = new HashMap<>();
         }
 
-        public Builder setPiece(final Piece piece)
-        {
+        public Builder setPiece(final Piece piece) {
             this.boardConfig.put(piece.getPiecePosition(), piece);
             return this;
         }
 
-        public Builder setMoveMaker(final PieceColor nextMoveMaker)
-        {
+        public Builder setMoveMaker(final PieceColor nextMoveMaker) {
             this.nextMoveMaker = nextMoveMaker;
             return this;
         }
 
-        public Board build()
-        {
-            return new Board(this);
-        }
-
         public void setEnpassantPawn(Pawn enpassantPawn) {
             this.enpassantPawn = enpassantPawn;
+        }
+
+        public Board build() {
+            return new Board(this);
         }
     }
 }

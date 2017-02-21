@@ -6,19 +6,22 @@ import com.chess.engine.board.Board;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Move.*;
 import com.chess.engine.board.Tile;
+import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class Knight extends Piece {
 
     private final static int[] MOVE_OFFSETS= { -17, -15, -10, -6, 6, 10, 15, 17};
-    public Knight(PieceColor pieceColor, int piecePosition) {
+    public Knight(final PieceColor pieceColor, final int piecePosition) {
         super(PieceType.KNIGHT,piecePosition, pieceColor,true);
     }
 
+    public Knight(final PieceColor pieceColor, final int piecePosition, final boolean isFirstMove) {
+        super(PieceType.KNIGHT,piecePosition, pieceColor,isFirstMove);
+    }
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
@@ -33,7 +36,7 @@ public class Knight extends Piece {
                 }
                 final Tile destinationTile = board.getTile(destinationPosition);
                 if (!destinationTile.isTileOccupied()) {
-                    legalMoves.add(new NonattackingMove(board, this, destinationPosition));
+                    legalMoves.add(new MajorMove(board, this, destinationPosition));
                 } else {
                     final Piece destinationPiece = destinationTile.getPiece();
                     final PieceColor destinationPieceColor = destinationPiece.getPieceColor();
@@ -44,7 +47,7 @@ public class Knight extends Piece {
                 }
             }
         }
-        return Collections.unmodifiableList(legalMoves);
+        return ImmutableList.copyOf(legalMoves);
     }
 
     public static boolean isFirstColumnExclusion(final int currentPosition, final int currentOffset){

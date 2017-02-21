@@ -6,18 +6,21 @@ import com.chess.engine.board.Board;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Move.*;
 import com.chess.engine.board.Tile;
-import com.chess.engine.player.Player;
+import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class King extends Piece {
     private final static int[] MOVE_OFFSETS= { -1, -7, -8, -9, 9, 8, 7, 1};
 
-    public King(PieceColor pieceColor, int piecePosition) {
+    public King(final PieceColor pieceColor, final int piecePosition) {
         super(PieceType.KING,piecePosition, pieceColor,true);
+    }
+
+    public King(final PieceColor pieceColor, final int piecePosition, final boolean isFirstMove) {
+        super(PieceType.KING,piecePosition, pieceColor,isFirstMove);
     }
 
     @Override
@@ -32,7 +35,7 @@ public class King extends Piece {
                 }
                 final Tile destinationTile = board.getTile(destinationPosition);
                 if (!destinationTile.isTileOccupied()) {
-                    legalMoves.add(new NonattackingMove(board, this, destinationPosition));
+                    legalMoves.add(new MajorMove(board, this, destinationPosition));
                 } else {
                     final Piece destinationPiece = destinationTile.getPiece();
                     final PieceColor destinationPieceColor = destinationPiece.getPieceColor();
@@ -43,7 +46,7 @@ public class King extends Piece {
                 }
             }
         }
-        return Collections.unmodifiableList(legalMoves);
+        return ImmutableList.copyOf(legalMoves);
     }
 
     public static boolean isFirstColumnExclusion(final int currentPosition, final int currentOffset){

@@ -5,18 +5,21 @@ import com.chess.engine.PieceColor;
 import com.chess.engine.board.Board;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Move.*;
-import com.chess.engine.board.Tile;
+import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class Pawn extends Piece {
     private final static int[] MOVE_OFFSETS = {7, 8, 9, 16};
 
-    public Pawn(PieceColor pieceColor, int piecePosition) {
+    public Pawn(final PieceColor pieceColor, final int piecePosition) {
         super(PieceType.PAWN,piecePosition, pieceColor,true);
+    }
+
+    public Pawn(final PieceColor pieceColor, final int piecePosition, final boolean isFirstMove) {
+        super(PieceType.PAWN,piecePosition, pieceColor,isFirstMove);
     }
 
     @Override
@@ -29,15 +32,15 @@ public class Pawn extends Piece {
             }
             if(currentOffset == 8 && !board.getTile(destinationPosition).isTileOccupied()) {
                 //TODO
-                legalMoves.add(new NonattackingMove(board, this, destinationPosition));
+                legalMoves.add(new MajorMove(board, this, destinationPosition));
             }
-            else if(currentOffset == 16 && this.isFirstMove &&
-                    (BoardUtils.SECOND_ROW[piecePosition] && this.getPieceColor().isBlack()) ||
-                    (BoardUtils.SEVENTH_ROW[piecePosition] && this.getPieceColor().isWhite())){
-                final int behindDestinationPosition = destinationPosition + (this.pieceColor.getDirection() * 8);
+            else if(currentOffset == 16 && isFirstMove &&
+                    ((BoardUtils.SEVENTH_RANK[piecePosition] && this.getPieceColor().isBlack()) ||
+                    (BoardUtils.SECOND_RANK[piecePosition] && this.getPieceColor().isWhite()))){
+                final int behindDestinationPosition = destinationPosition - (this.pieceColor.getDirection() * 8);
                 if(!board.getTile(destinationPosition).isTileOccupied() &&
                         !board.getTile(behindDestinationPosition).isTileOccupied())
-                    legalMoves.add(new NonattackingMove(board, this, behindDestinationPosition));
+                    legalMoves.add(new PawnJump(board, this, destinationPosition));
             }
             else if (currentOffset == 7 &&
                     (!BoardUtils.FIRST_COLUMN[destinationPosition] && this.pieceColor.isBlack()) &&
@@ -46,7 +49,7 @@ public class Pawn extends Piece {
                     final Piece destinationPiece = board.getTile(destinationPosition).getPiece();
                     if(this.pieceColor != destinationPiece.getPieceColor()){
                         //TODO
-                        legalMoves.add(new AttackingMove(board, this, destinationPosition, destinationPiece));
+                        legalMoves.add(new PawnAttackingMove(board, this, destinationPosition, destinationPiece));
                     }
                 }
             }
@@ -57,12 +60,12 @@ public class Pawn extends Piece {
                     final Piece destinationPiece = board.getTile(destinationPosition).getPiece();
                     if(this.pieceColor != destinationPiece.getPieceColor()){
                         //TODO
-                        legalMoves.add(new AttackingMove(board, this, destinationPosition, destinationPiece));
+                        legalMoves.add(new PawnAttackingMove(board, this, destinationPosition, destinationPiece));
                     }
                 }
             }
         }
-        return Collections.unmodifiableList(legalMoves);
+        return ImmutableList.copyOf(legalMoves);
     }
     @Override
     public String toString(){

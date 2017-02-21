@@ -40,6 +40,10 @@ public abstract class Piece {
         return this.pieceColor;
     }
 
+    public int getPieceValue() {
+        return this.pieceType.getPieceValue();
+    }
+
     public boolean isFirstMove() {
         return this.isFirstMove;
     }
@@ -74,8 +78,8 @@ public abstract class Piece {
     public abstract Piece movePiece(Move move);
 
     public enum PieceType {
-
-        PAWN("P") {
+        
+        PAWN(100, "P") {
             @Override
             public boolean isPawn() {
                 return true;
@@ -91,7 +95,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        KNIGHT("N") {
+        KNIGHT(300, "N") {
             @Override
             public boolean isPawn() {
                 return false;
@@ -107,7 +111,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        BISHOP("B") {
+        BISHOP(300, "B") {
             @Override
             public boolean isPawn() {
                 return false;
@@ -123,7 +127,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        ROOK("R") {
+        ROOK(500, "R") {
             @Override
             public boolean isPawn() {
                 return false;
@@ -139,7 +143,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        QUEEN("Q") {
+        QUEEN(900, "Q") {
             @Override
             public boolean isPawn() {
                 return false;
@@ -155,7 +159,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        KING("K") {
+        KING(10000, "K") {
             @Override
             public boolean isPawn() {
                 return false;
@@ -172,15 +176,21 @@ public abstract class Piece {
             }
         };
 
-        private final String pieceName;
-
         @Override
         public String toString() {
             return this.pieceName;
         }
 
-        PieceType(final String pieceName) {
+        private final int pieceValue;
+
+        private final String pieceName;
+        PieceType(final int pieceValue, final String pieceName) {
             this.pieceName = pieceName;
+            this.pieceValue = pieceValue;
+        }
+
+        public int getPieceValue(){
+            return this.pieceValue;
         }
 
         public abstract boolean isPawn();

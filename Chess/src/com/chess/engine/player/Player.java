@@ -5,6 +5,8 @@ import com.chess.engine.board.Board;
 import com.chess.engine.board.Move;
 import com.chess.engine.pieces.King;
 import com.chess.engine.pieces.Piece;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,31 +19,14 @@ public abstract class Player {
     protected final Collection<Move> legalMoves;
     protected final boolean isInCheck;
 
-    public Player(Board board, Collection<Move> legalMoves, Collection<Move> opponentMoves){
-        this.playerKing = establishKing();
+    public Player(Board board,
+                  Collection<Move> playerMoves,
+                  Collection<Move> opponentMoves){
         this.board = board;
-        //Change after importing Guava
-        legalMoves.addAll(calculateKingCastles(legalMoves, opponentMoves));
-        this.legalMoves = legalMoves;
+        this.playerKing = establishKing();
+        this.legalMoves = ImmutableList.copyOf(
+                Iterables.concat(playerMoves, calculateKingCastles(playerMoves, opponentMoves)));
         this.isInCheck = !Player.calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentMoves).isEmpty();
-    }
-
-    protected King establishKing(){
-        for(final Piece piece : getActivePieces()){
-            if(piece.getPieceType().isKing())
-                return (King) piece;
-        }
-        throw new RuntimeException("Your code broke!");
-    }
-
-    protected static Collection<Move> calculateAttacksOnTile(int piecePosition, Collection<Move> opponentMoves) {
-        final List<Move> attackMoves = new ArrayList<>();
-        for(final Move move : opponentMoves){
-            if(piecePosition == move.getDestinationCoordinate()){
-                attackMoves.add(move);
-            }
-        }
-        return Collections.unmodifiableList(attackMoves);
     }
 
     public King getPlayerKing() {
@@ -49,7 +34,7 @@ public abstract class Player {
     }
 
     public Collection<Move> getLegalMoves() {
-        return legalMoves;
+        return this.legalMoves;
     }
 
     public boolean isMoveLegal(Move move){
@@ -70,6 +55,24 @@ public abstract class Player {
 
     public boolean isCastled(){
         return false;
+    }
+
+    protected King establishKing(){
+        for(final Piece piece : getActivePieces()){
+            if(piece.getPieceType().isKing())
+                return (King) piece;
+        }
+        throw new RuntimeException("Your code broke!");
+    }
+
+    protected static Collection<Move> calculateAttacksOnTile(int piecePosition, Collection<Move> opponentMoves) {
+        final List<Move> attackMoves = new ArrayList<>();
+        for(final Move move : opponentMoves){
+            if(piecePosition == move.getDestinationCoordinate()){
+                attackMoves.add(move);
+            }
+        }
+        return ImmutableList.copyOf(attackMoves);
     }
 
     private boolean hasEscapeMoves() {
