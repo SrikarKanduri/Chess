@@ -22,7 +22,7 @@ public class BoardUtils {
     public static final boolean[] SECOND_RANK = initRow(48);
     public static final boolean[] FIRST_RANK = initRow(56);
 
-    public final List<String> ALGEBRAIC_NOTATION = initializeAlgebraicNotation();
+    public static final List<String> ALGEBRAIC_NOTATION = initializeAlgebraicNotation();
     public final Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
 
     public static final int START_TILE_INDEX = 0;
@@ -80,7 +80,7 @@ public class BoardUtils {
         return POSITION_TO_COORDINATE.get(position);
     }
 
-    public String getPositionAtCoordinate(final int coordinate) {
+    public static String getPositionAtCoordinate(final int coordinate) {
         return ALGEBRAIC_NOTATION.get(coordinate);
     }
 }

@@ -19,11 +19,13 @@ public final class Board {
     private final WhitePlayer whitePlayer;
     private final BlackPlayer blackPlayer;
     private final Player currentPlayer;
+    private final Pawn enPassantPawn;
 
     private Board(Builder builder){
         this.gameBoard = createGameBoard(builder);
         this.whitePieces = calculateActivePieces(builder, PieceColor.WHITE);
         this.blackPieces = calculateActivePieces(builder, PieceColor.BLACK);
+        this.enPassantPawn = builder.enPassantPawn;
         final Collection<Move> whiteLegalMoves = calculateLegalMoves(this.whitePieces);
         final Collection<Move> blackLegalMoves = calculateLegalMoves(this.blackPieces);
         this.whitePlayer = new WhitePlayer(this, whiteLegalMoves, blackLegalMoves);
@@ -49,6 +51,10 @@ public final class Board {
 
     public Player currentPlayer(){
         return this.currentPlayer;
+    }
+
+    public Pawn getEnPassantPawn(){
+        return this.enPassantPawn;
     }
 
     public Tile getTile(final int tilePosition)
@@ -125,7 +131,7 @@ public final class Board {
         builder.setPiece(new Bishop(PieceColor.WHITE, 61));
         builder.setPiece(new Knight(PieceColor.WHITE, 62));
         builder.setPiece(new Rook(PieceColor.WHITE, 63));
-        //white to move
+        //white to move first
         builder.setMoveMaker(PieceColor.WHITE);
         //build the board
         return builder.build();
@@ -146,7 +152,7 @@ public final class Board {
     public static class Builder{
         Map<Integer, Piece> boardConfig;
         PieceColor nextMoveMaker;
-        Pawn enpassantPawn;
+        Pawn enPassantPawn;
 
         public Builder(){
             this.boardConfig = new HashMap<>();
@@ -162,8 +168,8 @@ public final class Board {
             return this;
         }
 
-        public void setEnpassantPawn(Pawn enpassantPawn) {
-            this.enpassantPawn = enpassantPawn;
+        public void setEnPassantPawn(Pawn enPassantPawn) {
+            this.enPassantPawn = enPassantPawn;
         }
 
         public Board build() {

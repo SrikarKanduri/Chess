@@ -14,7 +14,7 @@ public class GameHistoryPanel extends JPanel {
 
     private final DataModel model;
     private final JScrollPane scrollPane;
-    private static final Dimension HISTORY_PANEL_DIMENSION = new Dimension(100, 400);
+    private static final Dimension HISTORY_PANEL_DIMENSION = new Dimension(200, 800);
 
     GameHistoryPanel(){
         this.setLayout(new BorderLayout());
@@ -33,8 +33,9 @@ public class GameHistoryPanel extends JPanel {
         this.model.clear();
         for(final Move move: moveHistory.getMoves()){
             final String moveText = move.toString();
-            if(move.getMovedPiece().getPieceColor().isWhite())
+            if(move.getMovedPiece().getPieceColor().isWhite()) {
                 this.model.setValueAt(moveText, currentRow, 0);
+            }
             else if(move.getMovedPiece().getPieceColor().isBlack()){
                 this.model.setValueAt(moveText, currentRow, 1);
                 currentRow++;
@@ -113,6 +114,7 @@ public class GameHistoryPanel extends JPanel {
                 fireTableRowsUpdated(row, row);
             } else if(col == 1){
                 currentRow.setBlackMove((String)value);
+                fireTableCellUpdated(row, col);
             }
         }
 

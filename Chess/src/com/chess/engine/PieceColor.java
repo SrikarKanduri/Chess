@@ -12,6 +12,11 @@ public enum PieceColor {
         }
 
         @Override
+        public int getOppositeDirection() {
+            return 1;
+        }
+
+        @Override
         public boolean isBlack() {
             return false;
         }
@@ -19,6 +24,11 @@ public enum PieceColor {
         @Override
         public boolean isWhite() {
             return true;
+        }
+
+        @Override
+        public boolean isPawnPromotionSquare(int position) {
+            return BoardUtils.EIGHTH_RANK[position];
         }
 
         @Override
@@ -33,6 +43,11 @@ public enum PieceColor {
         }
 
         @Override
+        public int getOppositeDirection() {
+            return -1;
+        }
+
+        @Override
         public boolean isBlack() {
             return true;
         }
@@ -43,14 +58,20 @@ public enum PieceColor {
         }
 
         @Override
+        public boolean isPawnPromotionSquare(int position) {
+            return BoardUtils.FIRST_RANK[position];
+        }
+
+        @Override
         public Player choosePlayer(WhitePlayer whitePlayer, BlackPlayer blackPlayer) {
             return blackPlayer;
         }
     };
 
     public abstract int getDirection();
+    public abstract int getOppositeDirection();
     public abstract boolean isBlack();
     public abstract boolean isWhite();
-
+    public abstract boolean isPawnPromotionSquare(int position);
     public abstract Player choosePlayer(WhitePlayer whitePlayer, BlackPlayer blackPlayer);
 }

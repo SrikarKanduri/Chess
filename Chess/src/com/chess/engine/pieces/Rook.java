@@ -42,7 +42,7 @@ public class Rook extends Piece{
                         final PieceColor destinationPieceColor = destinationPiece.getPieceColor();
 
                         if (destinationPieceColor != this.pieceColor) {
-                            legalMoves.add(new AttackingMove(board, this, destinationPosition, destinationPiece));
+                            legalMoves.add(new MajorAttackMove(board, this, destinationPosition, destinationPiece));
                         }
                         //Any obstacle=>rook has to stop
                         break;
