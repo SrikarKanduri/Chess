@@ -46,8 +46,8 @@ public final class Pawn extends Piece {
                     legalMoves.add(new PawnJump(board, this, destinationPosition));
             }
             else if (currentOffset == 7 &&
-                    (!(BoardUtils.FIRST_COLUMN[destinationPosition] && this.pieceColor.isBlack())) &&
-                    (!(BoardUtils.EIGHTH_COLUMN[destinationPosition] && this.pieceColor.isWhite()))){
+                    (!(BoardUtils.FIRST_COLUMN[piecePosition] && this.pieceColor.isBlack())) &&
+                    (!(BoardUtils.EIGHTH_COLUMN[piecePosition] && this.pieceColor.isWhite()))){
                 if(board.getTile(destinationPosition).isTileOccupied()){
                     final Piece destinationPiece = board.getTile(destinationPosition).getPiece();
                     if(this.pieceColor != destinationPiece.getPieceColor()){
@@ -65,8 +65,8 @@ public final class Pawn extends Piece {
                 }
             }
             else if (currentOffset == 9 &&
-                    (!(BoardUtils.FIRST_COLUMN[destinationPosition] && this.pieceColor.isWhite())) &&
-                    (!(BoardUtils.EIGHTH_COLUMN[destinationPosition] && this.pieceColor.isBlack()))){
+                    (!(BoardUtils.FIRST_COLUMN[piecePosition] && this.pieceColor.isWhite())) &&
+                    (!(BoardUtils.EIGHTH_COLUMN[piecePosition] && this.pieceColor.isBlack()))){
                 if(board.getTile(destinationPosition).isTileOccupied()){
                     final Piece destinationPiece = board.getTile(destinationPosition).getPiece();
                     if(this.pieceColor != destinationPiece.getPieceColor()){

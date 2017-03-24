@@ -14,25 +14,55 @@ import java.util.List;
 
 public class King extends Piece {
     private final static int[] MOVE_OFFSETS= { -1, -7, -8, -9, 9, 8, 7, 1};
+    private final boolean isCastled;
+    private final boolean kingSideCastleCapable;
+    private final boolean queenSideCastleCapable;
 
-    public King(final PieceColor pieceColor, final int piecePosition) {
+
+    public King(final PieceColor pieceColor,
+                final int piecePosition,
+                final boolean kingSideCastleCapable,
+                final boolean queenSideCastleCapable) {
         super(PieceType.KING,piecePosition, pieceColor,true);
+        this.isCastled = false;
+        this.kingSideCastleCapable = kingSideCastleCapable;
+        this.queenSideCastleCapable = queenSideCastleCapable;
     }
 
-    public King(final PieceColor pieceColor, final int piecePosition, final boolean isFirstMove) {
+    public King(final PieceColor pieceColor,
+                final int piecePosition,
+                final boolean isFirstMove,
+                final boolean isCastled,
+                final boolean kingSideCastleCapable,
+                final boolean queenSideCastleCapable) {
         super(PieceType.KING,piecePosition, pieceColor,isFirstMove);
+        this.isCastled = isCastled;
+        this.kingSideCastleCapable = kingSideCastleCapable;
+        this.queenSideCastleCapable = queenSideCastleCapable;
+    }
+
+    public boolean isCastled() {
+        return isCastled;
+    }
+
+    public boolean isKingSideCastleCapable() {
+        return kingSideCastleCapable;
+    }
+
+    public boolean isQueenSideCastleCapable() {
+        return queenSideCastleCapable;
     }
 
     @Override
     public Collection<Move> calculateLegalMoves(Board board) {
         final List<Move> legalMoves = new ArrayList<>();
-        for(final int currentOffset : MOVE_OFFSETS){
+        for (final int currentOffset : MOVE_OFFSETS) {
+            if (isFirstColumnExclusion(this.piecePosition, currentOffset) ||
+                    isEighthColumnExclusion(this.piecePosition, currentOffset)) {
+                continue;
+            }
             int destinationPosition = piecePosition + currentOffset;
-            if(BoardUtils.validDestinationPosition(destinationPosition)) {
-                if(isFirstColumnExclusion(this.piecePosition, currentOffset) ||
-                        isEighthColumnExclusion(this.piecePosition, currentOffset)) {
-                    continue;
-                }
+            if (BoardUtils.validDestinationPosition(destinationPosition)) {
                 final Tile destinationTile = board.getTile(destinationPosition);
                 if (!destinationTile.isTileOccupied()) {
                     legalMoves.add(new MajorMove(board, this, destinationPosition));
@@ -41,7 +71,7 @@ public class King extends Piece {
                     final PieceColor destinationPieceColor = destinationPiece.getPieceColor();
 
                     if (destinationPieceColor != this.pieceColor) {
-                        legalMoves.add(new MajorAttackMove(board,this, destinationPosition, destinationPiece));
+                        legalMoves.add(new MajorAttackMove(board, this, destinationPosition, destinationPiece));
                     }
                 }
             }
@@ -63,6 +93,11 @@ public class King extends Piece {
 
     @Override
     public King movePiece(final Move move) {
-        return new King(move.getMovedPiece().getPieceColor(), move.getDestinationCoordinate());
+        return new King(move.getMovedPiece().getPieceColor(),
+                move.getDestinationCoordinate(),
+                false,
+                move.isCastlingMove(),
+                false,
+                false);
     }
 }

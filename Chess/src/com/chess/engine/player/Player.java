@@ -33,6 +33,14 @@ public abstract class Player {
         return playerKing;
     }
 
+    public boolean isKingSideCastleCapable() {
+        return this.playerKing.isKingSideCastleCapable();
+    }
+
+    public boolean isQueenSideCastleCapable() {
+        return this.playerKing.isQueenSideCastleCapable();
+    }
+
     public Collection<Move> getLegalMoves() {
         return this.legalMoves;
     }
@@ -105,5 +113,5 @@ public abstract class Player {
     public abstract Collection<Piece> getActivePieces();
     public abstract PieceColor getPieceColor();
     public abstract Player getOpponent();
-    protected abstract Collection<Move> calculateKingCastles(Collection<Move> opponentLegals);
+    public abstract Collection<Move> calculateKingCastles(Collection<Move> opponentLegals);
 }

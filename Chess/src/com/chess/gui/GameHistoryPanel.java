@@ -14,7 +14,7 @@ public class GameHistoryPanel extends JPanel {
 
     private final DataModel model;
     private final JScrollPane scrollPane;
-    private static final Dimension HISTORY_PANEL_DIMENSION = new Dimension(200, 800);
+    private static final Dimension HISTORY_PANEL_DIMENSION = new Dimension(100, 40);
 
     GameHistoryPanel(){
         this.setLayout(new BorderLayout());
@@ -61,6 +61,30 @@ public class GameHistoryPanel extends JPanel {
             return "+";
         }
         return "";
+    }
+
+    private static class Row{
+        private String whiteMove;
+        private String blackMove;
+        Row(){
+
+        }
+
+        public String getWhiteMove(){
+            return this.whiteMove;
+        }
+
+        public void setWhiteMove(final String whiteMove) {
+            this.whiteMove = whiteMove;
+        }
+
+        public String getBlackMove() {
+            return this.blackMove;
+        }
+
+        public void setBlackMove(final String blackMove) {
+            this.blackMove = blackMove;
+        }
     }
 
     private static class DataModel extends DefaultTableModel {
@@ -111,7 +135,7 @@ public class GameHistoryPanel extends JPanel {
             }
             if(col == 0){
                 currentRow.setWhiteMove((String)value);
-                fireTableRowsUpdated(row, row);
+                fireTableRowsInserted(row, row);
             } else if(col == 1){
                 currentRow.setBlackMove((String)value);
                 fireTableCellUpdated(row, col);
@@ -129,27 +153,4 @@ public class GameHistoryPanel extends JPanel {
         }
     }
 
-    private static class Row{
-        private String whiteMove;
-        private String blackMove;
-        Row(){
-
-        }
-
-        public String getWhiteMove(){
-            return this.whiteMove;
-        }
-
-        public void setWhiteMove(final String whiteMove) {
-            this.whiteMove = whiteMove;
-        }
-
-        public String getBlackMove() {
-            return this.blackMove;
-        }
-
-        public void setBlackMove(final String blackMove) {
-            this.blackMove = blackMove;
-        }
-    }
 }

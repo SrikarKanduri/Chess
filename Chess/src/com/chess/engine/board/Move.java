@@ -170,7 +170,7 @@ public abstract class Move {
         }
     }
 
-    public static class PawnPromotion extends Move {
+    public static class PawnPromotion extends PawnMove {
 
         final Move decoratedMove;
         final Pawn promotedPawn;

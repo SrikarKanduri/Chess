@@ -41,10 +41,11 @@ public class WhitePlayer extends Player{
             //Whites short castle - kingside
             if(!this.board.getTile(61).isTileOccupied() && !this.board.getTile(62).isTileOccupied()){
                 final Tile rookTile = this.board.getTile(63);
-                if( rookTile.isTileOccupied() && rookTile.getPiece().isFirstMove() &&
+                if( rookTile.isTileOccupied() &&
+                    rookTile.getPiece().getPieceType().isRook() &&
+                    rookTile.getPiece().isFirstMove() &&
                     Player.calculateAttacksOnTile(61, opponentLegals).isEmpty() &&
-                    Player.calculateAttacksOnTile(62, opponentLegals).isEmpty() &&
-                    rookTile.getPiece().getPieceType().isRook()){ //Why check for rook if its first move
+                    Player.calculateAttacksOnTile(62, opponentLegals).isEmpty()){
                     kingCastles.add(new KingSideCastleMove(this.board,
                                        this.playerKing,
                                        62,

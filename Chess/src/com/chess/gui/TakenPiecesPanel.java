@@ -22,9 +22,9 @@ public class TakenPiecesPanel extends JPanel {
     private final JPanel northPanel;
     private final JPanel southPanel;
 
-    private final Color PANEL_COLOR = Color.decode("0xFDFE6");
+    private final Color PANEL_COLOR = Color.decode("0xFDF5E6");
     private final EtchedBorder PANEL_BORDER = new EtchedBorder(EtchedBorder.RAISED);
-    private final Dimension TAKEN_PIECES_DIMENSION = new Dimension(120, 20);
+    private final Dimension TAKEN_PIECES_DIMENSION = new Dimension(40, 80);
 
     TakenPiecesPanel(){
         super(new BorderLayout());
@@ -56,26 +56,15 @@ public class TakenPiecesPanel extends JPanel {
             }
         }
 
-        Collections.sort(whiteTakenPieces, new Comparator<Piece>() {
-            @Override
-            public int compare(Piece o1, Piece o2) {
-                return Ints.compare(o1.getPieceValue(), o2.getPieceValue());
-            }
-        });
-        Collections.sort(blackTakenPieces, new Comparator<Piece>() {
-            @Override
-            public int compare(Piece o1, Piece o2) {
-                return Ints.compare(o1.getPieceValue(), o2.getPieceValue());
-            }
-        });
+        Collections.sort(whiteTakenPieces, (o1, o2) -> Ints.compare(o1.getPieceValue(), o2.getPieceValue()));
+        Collections.sort(blackTakenPieces, (o1, o2) -> Ints.compare(o1.getPieceValue(), o2.getPieceValue()));
 
         for(final Piece takenPiece: whiteTakenPieces){
             try {
                 final BufferedImage image = ImageIO.read(new File(BoardUtils.IMAGES_PATH+
                         takenPiece.getPieceColor().toString().substring(0,1)+
-                        takenPiece.toString()));
+                        takenPiece.toString()+".gif"));
                 final ImageIcon icon = new ImageIcon(image);
-                //WRONG? new JLabel() without "icon"
                 this.southPanel.add(new JLabel(icon));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -85,9 +74,9 @@ public class TakenPiecesPanel extends JPanel {
             try {
                 final BufferedImage image = ImageIO.read(new File(BoardUtils.IMAGES_PATH+
                         takenPiece.getPieceColor().toString().substring(0,1)+
-                        takenPiece.toString()));
+                        takenPiece.toString()+".gif"));
                 final ImageIcon icon = new ImageIcon(image);
-                this.southPanel.add(new JLabel(icon));
+                this.northPanel.add(new JLabel(icon));
             } catch (IOException e) {
                 e.printStackTrace();
             }

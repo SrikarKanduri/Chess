@@ -4,7 +4,7 @@ import com.chess.gui.Table;
 
 public class JChess {
     public static void main(String[] args){
-        Table table = new Table();
+        Table.get().show();
     }
 }
 
