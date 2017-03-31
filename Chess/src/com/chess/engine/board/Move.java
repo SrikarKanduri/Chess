@@ -9,8 +9,8 @@ import static com.chess.engine.board.Board.*;
 
 public abstract class Move {
     protected final Board board;
-    protected final Piece movedPiece;
-    protected final int destinationCoordinate;
+    final Piece movedPiece;
+    final int destinationCoordinate;
     protected final boolean isFirstMove;
 
     private static final Move NULL_MOVE = new NullMove();
@@ -96,6 +96,15 @@ public abstract class Move {
         return builder.build();
     }
 
+    public Board undo() {
+        final Board.Builder builder = new Builder();
+        for (final Piece piece : this.board.getAllPieces()) {
+            builder.setPiece(piece);
+        }
+        builder.setMoveMaker(this.board.currentPlayer().getPieceColor());
+        return builder.build();
+    }
+
     public static class MajorMove extends Move {
 
         public MajorMove(final Board board, final Piece movedPiece, final int destinationCoordinate) {
@@ -116,10 +125,10 @@ public abstract class Move {
 
     static abstract class AttackMove extends Move {
         final Piece attackedPiece;
-        public AttackMove(final Board board,
-                          final Piece movedPiece,
-                          final int destinationCoordinate,
-                          final Piece attackedPiece) {
+        AttackMove(final Board board,
+                   final Piece movedPiece,
+                   final int destinationCoordinate,
+                   final Piece attackedPiece) {
             super(board, movedPiece, destinationCoordinate);
             this.attackedPiece = attackedPiece;
         }
@@ -166,7 +175,26 @@ public abstract class Move {
 
         @Override
         public String toString(){
-            return this.movedPiece.getPieceType() + BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
+            return this.movedPiece.getPieceType().toString().substring(0,1) +
+                    "x" + BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
+        }
+    }
+
+    public static class PawnMove extends Move {
+        public PawnMove(final Board board,
+                        final Piece movedPiece,
+                        final int destinationCoordinate) {
+            super(board, movedPiece, destinationCoordinate);
+        }
+
+        @Override
+        public boolean equals(Object other){
+            return this == other || other instanceof PawnMove && super.equals(other);
+        }
+
+        @Override
+        public String toString(){
+            return BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
         }
     }
 
@@ -217,24 +245,6 @@ public abstract class Move {
         @Override
         public String toString(){
             return "";
-        }
-    }
-
-    public static class PawnMove extends Move {
-        public PawnMove(final Board board,
-                        final Piece movedPiece,
-                        final int destinationCoordinate) {
-            super(board, movedPiece, destinationCoordinate);
-        }
-
-        @Override
-        public boolean equals(Object other){
-            return this == other || other instanceof PawnMove && super.equals(other);
-        }
-
-        @Override
-        public String toString(){
-            return BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
         }
     }
 
@@ -321,16 +331,15 @@ public abstract class Move {
 
         @Override
         public String toString(){
-            return this.movedPiece.getPieceType().toString().substring(0,1)+
-                    BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
+            return BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
         }
     }
 
     public static class CastleMove extends Move {
-        protected final Rook castleRook;
-        protected final int castleRookStart;
-        protected final int castleRookDestination;
-        public CastleMove(final Board board,
+        final Rook castleRook;
+        final int castleRookStart;
+        final int castleRookDestination;
+        CastleMove(final Board board,
                           final Piece movedPiece,
                           final int destinationCoordinate,
                           final Rook castleRook,
@@ -342,7 +351,7 @@ public abstract class Move {
             this.castleRookDestination = castleRookDestination;
         }
 
-        public Rook getCastleRook() {
+        Rook getCastleRook() {
             return this.castleRook;
         }
 

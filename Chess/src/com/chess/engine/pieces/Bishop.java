@@ -19,10 +19,6 @@ public class Bishop extends Piece{
         super(PieceType.BISHOP,piecePosition, pieceColor,true);
     }
 
-    public Bishop(final PieceColor pieceColor, final int piecePosition, final boolean isFirstMove) {
-        super(PieceType.BISHOP,piecePosition, pieceColor,isFirstMove);
-    }
-
     @Override
     public Collection<Move> calculateLegalMoves(Board board) {
         final List<Move> legalMoves = new ArrayList<>();
@@ -54,15 +50,20 @@ public class Bishop extends Piece{
         return ImmutableList.copyOf(legalMoves);
     }
 
-    public static boolean isFirstColumnExclusion(final int currentPosition, final int currentOffset){
+    private static boolean isFirstColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.FIRST_COLUMN[currentPosition] && (currentOffset == -9 || currentOffset == 7);
     }
-    public static boolean isEighthColumnExclusion(final int currentPosition, final int currentOffset){
+    private static boolean isEighthColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.EIGHTH_COLUMN[currentPosition] && (currentOffset == 9 || currentOffset == -7);
     }
     @Override
     public String toString(){
         return this.pieceType.toString();
+    }
+
+    @Override
+    public int locationBonus() {
+        return this.pieceColor.bishopBonus(this.piecePosition);
     }
 
     @Override

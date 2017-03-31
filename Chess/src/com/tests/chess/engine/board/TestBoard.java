@@ -41,21 +41,21 @@ public class TestBoard {
                 BoardUtils.getCoordinateAtPosition("f3")));
         assertTrue(t1.getMoveStatus().isDone());
 
-        final MoveTransition t2= t1.getTransitionBoard()
+        final MoveTransition t2= t1.getToBoard()
                 .currentPlayer()
-                .makeMove(Move.MoveFactory.createMove(t1.getTransitionBoard(), BoardUtils.getCoordinateAtPosition("e7"),
+                .makeMove(Move.MoveFactory.createMove(t1.getToBoard(), BoardUtils.getCoordinateAtPosition("e7"),
                 BoardUtils.getCoordinateAtPosition("e5")));
         assertTrue(t2.getMoveStatus().isDone());
 
-        final MoveTransition t3= t2.getTransitionBoard().
+        final MoveTransition t3= t2.getToBoard().
                 currentPlayer()
-                .makeMove(Move.MoveFactory.createMove(t2.getTransitionBoard(), BoardUtils.getCoordinateAtPosition("g2"),
+                .makeMove(Move.MoveFactory.createMove(t2.getToBoard(), BoardUtils.getCoordinateAtPosition("g2"),
                 BoardUtils.getCoordinateAtPosition("g4")));
         assertTrue(t3.getMoveStatus().isDone());
 
         final MoveStrategy strategy = new MiniMax(4);
-        final Move aiMove = strategy.execute(t3.getTransitionBoard());
-        final Move bestMove = Move.MoveFactory.createMove(t3.getTransitionBoard(), BoardUtils.getCoordinateAtPosition("d8"),
+        final Move aiMove = strategy.execute(t3.getToBoard());
+        final Move bestMove = Move.MoveFactory.createMove(t3.getToBoard(), BoardUtils.getCoordinateAtPosition("d8"),
                 BoardUtils.getCoordinateAtPosition("h4"));
         assertEquals(aiMove, bestMove);
     }

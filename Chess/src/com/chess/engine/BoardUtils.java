@@ -10,6 +10,10 @@ import java.util.Map;
 public class BoardUtils {
     public static final boolean[] FIRST_COLUMN = initColumn(0);
     public static final boolean[] SECOND_COLUMN = initColumn(1);
+    public static final boolean[] THIRD_COLUMN = initColumn(2);
+    public static final boolean[] FOURTH_COLUMN = initColumn(3);
+    public static final boolean[] FIFTH_COLUMN = initColumn(4);
+    public static final boolean[] SIXTH_COLUMN = initColumn(5);
     public static final boolean[] SEVENTH_COLUMN = initColumn(6);
     public static final boolean[] EIGHTH_COLUMN = initColumn(7);
 
@@ -22,15 +26,15 @@ public class BoardUtils {
     public static final boolean[] SECOND_RANK = initRow(48);
     public static final boolean[] FIRST_RANK = initRow(56);
 
-    public static final List<String> ALGEBRAIC_NOTATION = initializeAlgebraicNotation();
-    public static final Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
+    private static final List<String> ALGEBRAIC_NOTATION = initializeAlgebraicNotation();
+    private static final Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
 
-    public static final int START_TILE_INDEX = 0;
+    private static final int START_TILE_INDEX = 0;
     public static final int NUM_TILES = 64;
     public static final int NUM_TILES_PER_ROW = 8;
-    public static final String IMAGES_PATH = "C:\\Users\\srika\\Desktop\\Srikar Stuff\\Major_Project\\Chess\\art\\holywarriors\\";
+    public static final String ICONS_PATH = "C:\\Users\\srika\\Desktop\\Srikar Stuff\\Major_Project\\Chess\\art\\holywarriors\\";
 
-    private static final boolean[] initColumn(int columnNumber)
+    private static boolean[] initColumn(int columnNumber)
     {
         final boolean[] column = new boolean[NUM_TILES];
         do{

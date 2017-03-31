@@ -53,16 +53,23 @@ public class Rook extends Piece{
 
         return ImmutableList.copyOf(legalMoves);
     }
-    public static boolean isFirstColumnExclusion(final int currentPosition, final int currentOffset){
+    private static boolean isFirstColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.FIRST_COLUMN[currentPosition] && (currentOffset == -1);
     }
-    public static boolean isEighthColumnExclusion(final int currentPosition, final int currentOffset){
+    private static boolean isEighthColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.EIGHTH_COLUMN[currentPosition] && (currentOffset == 1);
     }
+
     @Override
     public String toString(){
         return this.pieceType.toString();
     }
+
+    @Override
+    public int locationBonus() {
+        return this.pieceColor.rookBonus(this.piecePosition);
+    }
+
     @Override
     public Rook movePiece(final Move move) {
         return new Rook(move.getMovedPiece().getPieceColor(), move.getDestinationCoordinate());

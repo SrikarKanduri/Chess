@@ -10,7 +10,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class GameHistoryPanel extends JPanel {
+class GameHistoryPanel extends JPanel {
 
     private final DataModel model;
     private final JScrollPane scrollPane;
@@ -70,19 +70,19 @@ public class GameHistoryPanel extends JPanel {
 
         }
 
-        public String getWhiteMove(){
+        String getWhiteMove(){
             return this.whiteMove;
         }
 
-        public void setWhiteMove(final String whiteMove) {
+        void setWhiteMove(final String whiteMove) {
             this.whiteMove = whiteMove;
         }
 
-        public String getBlackMove() {
+        String getBlackMove() {
             return this.blackMove;
         }
 
-        public void setBlackMove(final String blackMove) {
+        void setBlackMove(final String blackMove) {
             this.blackMove = blackMove;
         }
     }
@@ -95,7 +95,7 @@ public class GameHistoryPanel extends JPanel {
             this.values = new ArrayList<>();
         }
 
-        public void clear(){
+        void clear(){
             this.values.clear();
             setRowCount(0);
         }
@@ -109,7 +109,7 @@ public class GameHistoryPanel extends JPanel {
 
         @Override
         public int getColumnCount(){
-            return this.NAMES.length;
+            return NAMES.length;
         }
 
         @Override
@@ -152,5 +152,4 @@ public class GameHistoryPanel extends JPanel {
             return NAMES[col];
         }
     }
-
 }

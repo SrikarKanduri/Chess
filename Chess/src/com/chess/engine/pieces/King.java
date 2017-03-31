@@ -29,12 +29,12 @@ public class King extends Piece {
         this.queenSideCastleCapable = queenSideCastleCapable;
     }
 
-    public King(final PieceColor pieceColor,
-                final int piecePosition,
-                final boolean isFirstMove,
-                final boolean isCastled,
-                final boolean kingSideCastleCapable,
-                final boolean queenSideCastleCapable) {
+    private King(final PieceColor pieceColor,
+                 final int piecePosition,
+                 final boolean isFirstMove,
+                 final boolean isCastled,
+                 final boolean kingSideCastleCapable,
+                 final boolean queenSideCastleCapable) {
         super(PieceType.KING,piecePosition, pieceColor,isFirstMove);
         this.isCastled = isCastled;
         this.kingSideCastleCapable = kingSideCastleCapable;
@@ -79,16 +79,21 @@ public class King extends Piece {
         return ImmutableList.copyOf(legalMoves);
     }
 
-    public static boolean isFirstColumnExclusion(final int currentPosition, final int currentOffset){
+    private static boolean isFirstColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.FIRST_COLUMN[currentPosition] && (currentOffset == -1 || currentOffset == -9 || currentOffset == 7);
     }
 
-    public static boolean isEighthColumnExclusion(final int currentPosition, final int currentOffset){
+    private static boolean isEighthColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.EIGHTH_COLUMN[currentPosition] && (currentOffset == 1 || currentOffset == 9 || currentOffset == -7);
     }
     @Override
     public String toString(){
         return this.pieceType.toString();
+    }
+
+    @Override
+    public int locationBonus() {
+        return this.pieceColor.kingBonus(this.piecePosition);
     }
 
     @Override

@@ -19,7 +19,7 @@ public class Queen extends Piece{
         super(PieceType.QUEEN,piecePosition, pieceColor,true);
     }
 
-    public Queen(final PieceColor pieceColor, final int piecePosition, final boolean isFirstMove) {
+    Queen(final PieceColor pieceColor, final int piecePosition, final boolean isFirstMove) {
         super(PieceType.QUEEN,piecePosition, pieceColor,isFirstMove);
     }
 
@@ -52,16 +52,22 @@ public class Queen extends Piece{
 
         return ImmutableList.copyOf(legalMoves);
     }
-    public static boolean isFirstColumnExclusion(final int currentPosition, final int currentOffset){
+    private static boolean isFirstColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.FIRST_COLUMN[currentPosition] && (currentOffset == -9 || currentOffset == -1 ||currentOffset == 7);
     }
-    public static boolean isEighthColumnExclusion(final int currentPosition, final int currentOffset){
+    private static boolean isEighthColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.EIGHTH_COLUMN[currentPosition] && (currentOffset == 9 || currentOffset == 1 ||currentOffset == -7);
     }
     @Override
     public String toString(){
         return this.pieceType.toString();
     }
+
+    @Override
+    public int locationBonus() {
+        return this.pieceColor.queenBonus(this.piecePosition);
+    }
+
     @Override
     public Queen movePiece(final Move move) {
         return new Queen(move.getMovedPiece().getPieceColor(), move.getDestinationCoordinate());

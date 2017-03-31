@@ -19,9 +19,6 @@ public class Knight extends Piece {
         super(PieceType.KNIGHT,piecePosition, pieceColor,true);
     }
 
-    public Knight(final PieceColor pieceColor, final int piecePosition, final boolean isFirstMove) {
-        super(PieceType.KNIGHT,piecePosition, pieceColor,isFirstMove);
-    }
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
@@ -50,22 +47,27 @@ public class Knight extends Piece {
         return ImmutableList.copyOf(legalMoves);
     }
 
-    public static boolean isFirstColumnExclusion(final int currentPosition, final int currentOffset){
+    private static boolean isFirstColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.FIRST_COLUMN[currentPosition] && (currentOffset == -17 || currentOffset == -10 || currentOffset == 6 || currentOffset == 15);
     }
-    public static boolean isSecondColumnExclusion(final int currentPosition, final int currentOffset){
+    private static boolean isSecondColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.SECOND_COLUMN[currentPosition] && (currentOffset == -10 || currentOffset == 6);
     }
-    public static boolean isSeventhColumnExclusion(final int currentPosition, final int currentOffset){
+    private static boolean isSeventhColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.SEVENTH_COLUMN[currentPosition] && (currentOffset == 10 || currentOffset ==-6);
     }
-    public static boolean isEighthColumnExclusion(final int currentPosition, final int currentOffset){
+    private static boolean isEighthColumnExclusion(final int currentPosition, final int currentOffset){
         return BoardUtils.EIGHTH_COLUMN[currentPosition] && (currentOffset == 17 || currentOffset == 10 || currentOffset == -6 || currentOffset == -15);
     }
 
     @Override
     public String toString(){
         return this.pieceType.toString();
+    }
+
+    @Override
+    public int locationBonus() {
+        return this.pieceColor.knightBonus(this.piecePosition);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.chess.engine.player.ai;
 import com.chess.engine.board.Board;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.Player;
+import com.chess.engine.player.ai.KingSafetyAnalyzer.KingDistance;
 
 public final class StandardBoardEvaluator
         implements BoardEvaluator {
@@ -16,21 +17,25 @@ public final class StandardBoardEvaluator
     @Override
     public int evaluate(final Board board,
                         final int depth) {
-        return score(board.whitePlayer(), depth) - score(board.blackPlayer(), depth);
+        return score(board, board.whitePlayer(), depth) - score(board, board.blackPlayer(), depth);
     }
 
-    private static int score(final Player player,
+    private static int score(final Board board,
+                             final Player player,
                              final int depth) {
-        return mobility(player) +
+        return  mobility(player) +
                 checkmate(player, depth) +
                 castle(player) +
-                pieceValue(player);
+                pieceValueAndLocation(player) +
+                kingSafety(player) +
+                pawnStructure(player) +
+                rookStructure(board, player);
     }
 
-    private static int pieceValue(final Player player) {
+    private static int pieceValueAndLocation(final Player player) {
         int pieceValuationScore = 0;
         for (final Piece piece : player.getActivePieces()) {
-            pieceValuationScore += piece.getPieceValue();
+            pieceValuationScore += piece.getPieceValue() + piece.locationBonus();
         }
         return pieceValuationScore;
     }
@@ -41,11 +46,10 @@ public final class StandardBoardEvaluator
 
     private static int checkmate(final Player player,
                                  final int depth) {
-        return player.getOpponent().isInCheckMate() ? CHECK_MATE_BONUS  * depthBonus(depth) : check(player, depth);
+        return player.getOpponent().isInCheckMate() ? CHECK_MATE_BONUS  * depthBonus(depth) : check(player);
     }
 
-    private static int check(final Player player,
-                             final int depth) {
+    private static int check(final Player player) {
         return player.getOpponent().isInCheck() ? CHECK_BONUS : 0;
     }
 
@@ -54,13 +58,28 @@ public final class StandardBoardEvaluator
     }
 
     private static int castleCapable(Player player) {
-        return (player.isKingSideCastleCapable() || player.isQueenSideCastleCapable()? CASTLE_CAPABLE_BONUS : 0);
+        return (player.isKingSideCastleCapable() || player.isQueenSideCastleCapable())? CASTLE_CAPABLE_BONUS : 0;
     }
 
+    //Why more bonus for castled?
     private static int castle(final Player player) {
         return player.isCastled() ? CASTLED_BONUS : castleCapable(player);
     }
 
+    //Penalty for isolated pawns(no pawn adjacent to a pawn)
+    private static int pawnStructure(final Player player) {
+        return PawnStructureAnalyzer.get().pawnStructureScore(player);
+    }
 
+    //King is safe if enemies are not nearby
+    private static int kingSafety(final Player player) {
+        final KingDistance kingDistance = KingSafetyAnalyzer.get().calculateKingTropism(player);
+        return ((kingDistance.getEnemyPiece().getPieceValue() / 100) * kingDistance.getDistance());
+    }
+
+    //Rook on an open file has advantage
+    private static int rookStructure(final Board board, final Player player) {
+        return RookStructureAnalyzer.get().rookStructureScore(board, player);
+    }
 
 }

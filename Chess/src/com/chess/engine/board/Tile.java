@@ -8,7 +8,7 @@ import java.util.*;
 
 public abstract class Tile
 {
-    protected final int tilePosition;
+    private final int tilePosition;
     private static final Map<Integer,EmptyTile> EMPTY_TILES = createAllPossibleEmptyTiles();
 
     private Tile(int tilePosition) {
@@ -27,7 +27,7 @@ public abstract class Tile
         return ImmutableMap.copyOf(emptyTileMap);
     }
 
-    public static Tile createTile(final int tilePosition, final Piece piece){
+    static Tile createTile(final int tilePosition, final Piece piece){
         return piece != null? new OccupiedTile(tilePosition,piece) : EMPTY_TILES.get(tilePosition);
     }
 

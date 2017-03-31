@@ -91,11 +91,11 @@ class GameSetup extends JDialog {
         return getBlackPlayerType() == PlayerType.COMPUTER;
     }
 
-    PlayerType getWhitePlayerType() {
+    private PlayerType getWhitePlayerType() {
         return this.whitePlayerType;
     }
 
-    PlayerType getBlackPlayerType() {
+    private PlayerType getBlackPlayerType() {
         return this.blackPlayerType;
     }
 

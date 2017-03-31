@@ -72,4 +72,9 @@ public class BlackPlayer extends Player{
                 }
         return kingCastles;
     }
+
+    @Override
+    public String toString(){
+        return "Black Player";
+    }
 }

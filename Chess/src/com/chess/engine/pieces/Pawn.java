@@ -18,10 +18,6 @@ public final class Pawn extends Piece {
         super(PieceType.PAWN,piecePosition, pieceColor,true);
     }
 
-    public Pawn(final PieceColor pieceColor, final int piecePosition, final boolean isFirstMove) {
-        super(PieceType.PAWN, piecePosition, pieceColor, isFirstMove);
-    }
-
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
@@ -95,6 +91,11 @@ public final class Pawn extends Piece {
     @Override
     public Pawn movePiece(final Move move) {
         return new Pawn(move.getMovedPiece().getPieceColor(), move.getDestinationCoordinate());
+    }
+
+    @Override
+    public int locationBonus() {
+        return this.pieceColor.pawnBonus(this.piecePosition);
     }
 
     public Piece getPromotionPiece() {

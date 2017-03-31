@@ -41,6 +41,10 @@ public final class Board {
         return this.blackPieces;
     }
 
+    public Iterable<Piece> getAllPieces() {
+        return Iterables.unmodifiableIterable(Iterables.concat(this.whitePieces, this.blackPieces));
+    }
+
     public Player whitePlayer(){
         return this.whitePlayer;
     }
@@ -90,7 +94,7 @@ public final class Board {
         return ImmutableList.copyOf(legalMoves);
     }
 
-    public Iterable<Move> getAllLegalMoves() {
+    Iterable<Move> getAllLegalMoves() {
         return Iterables.unmodifiableIterable(Iterables.concat(this.whitePlayer.getLegalMoves(),
                 this.blackPlayer.getLegalMoves()));
     }
@@ -154,7 +158,7 @@ public final class Board {
         PieceColor nextMoveMaker;
         Pawn enPassantPawn;
 
-        public Builder(){
+        Builder(){
             this.boardConfig = new HashMap<>();
         }
 
@@ -163,16 +167,16 @@ public final class Board {
             return this;
         }
 
-        public Builder setMoveMaker(final PieceColor nextMoveMaker) {
+        Builder setMoveMaker(final PieceColor nextMoveMaker) {
             this.nextMoveMaker = nextMoveMaker;
             return this;
         }
 
-        public void setEnPassantPawn(Pawn enPassantPawn) {
+        void setEnPassantPawn(Pawn enPassantPawn) {
             this.enPassantPawn = enPassantPawn;
         }
 
-        public Board build() {
+        Board build() {
             return new Board(this);
         }
     }

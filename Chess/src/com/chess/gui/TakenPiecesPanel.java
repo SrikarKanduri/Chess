@@ -14,17 +14,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-public class TakenPiecesPanel extends JPanel {
+class TakenPiecesPanel extends JPanel {
     private final JPanel northPanel;
     private final JPanel southPanel;
 
     private final Color PANEL_COLOR = Color.decode("0xFDF5E6");
     private final EtchedBorder PANEL_BORDER = new EtchedBorder(EtchedBorder.RAISED);
-    private final Dimension TAKEN_PIECES_DIMENSION = new Dimension(40, 80);
+    private final Dimension TAKEN_PIECES_DIMENSION = new Dimension(80, 80);
 
     TakenPiecesPanel(){
         super(new BorderLayout());
@@ -39,7 +37,7 @@ public class TakenPiecesPanel extends JPanel {
         setPreferredSize(TAKEN_PIECES_DIMENSION);
     }
 
-    public void redo(final MoveLog movelog){
+    void redo(final MoveLog movelog){
         this.northPanel.removeAll();
         this.southPanel.removeAll();
 
@@ -56,12 +54,12 @@ public class TakenPiecesPanel extends JPanel {
             }
         }
 
-        Collections.sort(whiteTakenPieces, (o1, o2) -> Ints.compare(o1.getPieceValue(), o2.getPieceValue()));
-        Collections.sort(blackTakenPieces, (o1, o2) -> Ints.compare(o1.getPieceValue(), o2.getPieceValue()));
+        whiteTakenPieces.sort((o1, o2) -> Ints.compare(o1.getPieceValue(), o2.getPieceValue()));
+        blackTakenPieces.sort((o1, o2) -> Ints.compare(o1.getPieceValue(), o2.getPieceValue()));
 
         for(final Piece takenPiece: whiteTakenPieces){
             try {
-                final BufferedImage image = ImageIO.read(new File(BoardUtils.IMAGES_PATH+
+                final BufferedImage image = ImageIO.read(new File(BoardUtils.ICONS_PATH +
                         takenPiece.getPieceColor().toString().substring(0,1)+
                         takenPiece.toString()+".gif"));
                 final ImageIcon icon = new ImageIcon(image);
@@ -72,7 +70,7 @@ public class TakenPiecesPanel extends JPanel {
         }
         for(final Piece takenPiece: blackTakenPieces){
             try {
-                final BufferedImage image = ImageIO.read(new File(BoardUtils.IMAGES_PATH+
+                final BufferedImage image = ImageIO.read(new File(BoardUtils.ICONS_PATH +
                         takenPiece.getPieceColor().toString().substring(0,1)+
                         takenPiece.toString()+".gif"));
                 final ImageIcon icon = new ImageIcon(image);

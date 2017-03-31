@@ -3,17 +3,16 @@ package com.chess.engine.pieces;
 import com.chess.engine.PieceColor;
 import com.chess.engine.board.Board;
 import com.chess.engine.board.Move;
-import com.chess.engine.player.Player;
 
 import java.util.*;
 
 public abstract class Piece {
 
-    protected final PieceType pieceType;
-    protected final int piecePosition;
-    protected final PieceColor pieceColor;
-    protected final boolean isFirstMove;
-    protected final int cachedHashCode;
+    final PieceType pieceType;
+    final int piecePosition;
+    final PieceColor pieceColor;
+    final boolean isFirstMove;
+    private final int cachedHashCode;
 
     Piece(final PieceType pieceType,
           final int piecePosition,
@@ -76,6 +75,7 @@ public abstract class Piece {
 
     public abstract Collection<Move> calculateLegalMoves(final Board board);
     public abstract Piece movePiece(Move move);
+    public abstract int locationBonus();
 
     public enum PieceType {
         
@@ -182,8 +182,8 @@ public abstract class Piece {
         }
 
         private final int pieceValue;
-
         private final String pieceName;
+
         PieceType(final int pieceValue, final String pieceName) {
             this.pieceName = pieceName;
             this.pieceValue = pieceValue;

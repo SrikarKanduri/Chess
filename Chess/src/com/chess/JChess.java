@@ -1,5 +1,6 @@
 package com.chess;
 
+import com.chess.gui.GraphPanel;
 import com.chess.gui.Table;
 
 public class JChess {
