@@ -25,6 +25,7 @@ import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.MoveTransition;
 import com.chess.engine.player.ai.AlphaBetaPruning;
 import com.chess.engine.player.ai.MoveStrategy;
+import com.chess.pgn.FenUtilities;
 import com.google.common.collect.Lists;
 
 public final class Table extends Observable {
@@ -335,6 +336,8 @@ public final class Table extends Observable {
                 thinkTank.execute();
             }
 
+            //System.out.println(FenUtilities.createFENfromBoard(Table.get().getGameBoard()));
+
             if (Table.get().getGameBoard().currentPlayer().isInCheckMate() ||
                     Table.get().getGameBoard().currentPlayer().isInStaleMate()) {
                 JOptionPane.showMessageDialog(Table.get().getBoardPanel(),
@@ -356,37 +359,8 @@ public final class Table extends Observable {
         }
 
         boolean isThreeFoldRepetition() {
-            List<Move> allMoves = Table.get().getMoveLog().getMoves();
-            int currentMoveIndex = allMoves.size()-1;
-            int secondFoldMoveIndex = currentMoveIndex - 4;
-            int firstFoldMoveIndex = secondFoldMoveIndex - 4;
-            int distance = currentMoveIndex - secondFoldMoveIndex - 1;
-
-            while(firstFoldMoveIndex >= 0){
-                Move thirdFoldMoveMade = allMoves.get(currentMoveIndex);
-                Move secondFoldMoveMade = allMoves.get(secondFoldMoveIndex);
-                Move firstFoldMoveMade = allMoves.get(firstFoldMoveIndex);
-
-                if(thirdFoldMoveMade.equals(secondFoldMoveMade) &&
-                   secondFoldMoveMade.equals(firstFoldMoveMade) &&
-                   firstFoldMoveIndex - distance >= 0){
-                    int gap;
-                    for(gap = 1; gap <= distance; gap++){
-                        thirdFoldMoveMade = allMoves.get(currentMoveIndex - gap);
-                        secondFoldMoveMade = allMoves.get(secondFoldMoveIndex - gap);
-                        firstFoldMoveMade = allMoves.get(firstFoldMoveIndex - gap);
-
-                        if(!thirdFoldMoveMade.equals(secondFoldMoveMade) || !secondFoldMoveMade.equals(firstFoldMoveMade))
-                            break;
-                    }
-                    if(gap == distance)
-                        return true;
-                }
-
-                secondFoldMoveIndex -= 2;
-                firstFoldMoveIndex = secondFoldMoveIndex - distance - 3;
-            }
-            return false;
+            List<String> fenLog = FenUtilities.getFENLog();
+            return fenLog != null && Collections.frequency(fenLog, fenLog.get(fenLog.size() - 1)) == 3;
         }
     }
 
@@ -415,6 +389,7 @@ public final class Table extends Observable {
                 Table.get().updateComputerMove(bestMove);
                 Table.get().updateGameBoard(Table.get().getGameBoard().currentPlayer().makeMove(bestMove).getToBoard());
                 Table.get().getMoveLog().addMove(bestMove);
+                FenUtilities.saveFEN(Table.get().getGameBoard());
                 Table.get().getGameHistoryPanel().redo(Table.get().getGameBoard(), Table.get().getMoveLog());
                 Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
                 Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
@@ -568,6 +543,7 @@ public final class Table extends Observable {
                                 if (transition.getMoveStatus().isDone()) {
                                     chessBoard = transition.getToBoard();
                                     moveLog.addMove(move);
+                                    FenUtilities.saveFEN(chessBoard);
                                 }
                                 sourceTile = null;
                                 destinationTile = null;

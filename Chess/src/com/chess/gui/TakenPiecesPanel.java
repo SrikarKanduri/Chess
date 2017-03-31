@@ -53,7 +53,6 @@ class TakenPiecesPanel extends JPanel {
                     blackTakenPieces.add(takenPiece);
             }
         }
-
         whiteTakenPieces.sort((o1, o2) -> Ints.compare(o1.getPieceValue(), o2.getPieceValue()));
         blackTakenPieces.sort((o1, o2) -> Ints.compare(o1.getPieceValue(), o2.getPieceValue()));
 
