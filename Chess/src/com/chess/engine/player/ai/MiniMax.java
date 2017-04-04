@@ -1,24 +1,23 @@
 package com.chess.engine.player.ai;
 
-import com.chess.engine.BoardUtils;
 import com.chess.engine.board.Board;
 import com.chess.engine.board.Move;
 import com.chess.engine.player.MoveTransition;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 public final class MiniMax implements MoveStrategy {
 
     private final BoardEvaluator evaluator;
     private final int depth;
-    private long boardsEvaluated;
-    private FreqTableRow[] freqTable;
-    private int freqTableIndex;
+    private long executionTime;
 
     public MiniMax(final int searchDepth) {
         this.evaluator = new StandardBoardEvaluator();
         this.depth = searchDepth;
-        this.boardsEvaluated = 0;
+    }
+
+    @Override
+    public long getExecutionTime(){
+        return this.executionTime;
     }
 
     @Override
@@ -34,24 +33,14 @@ public final class MiniMax implements MoveStrategy {
         int lowestSeenValue = Integer.MAX_VALUE;
         int currentValue;
         System.out.println(board.currentPlayer() + " THINKING with depth = " +depth);
-        this.freqTable = new FreqTableRow[board.currentPlayer().getLegalMoves().size()];
-        this.freqTableIndex = 0;
-        int moveCounter = 1;
-        final int numMoves = board.currentPlayer().getLegalMoves().size();
 
         for (final Move move : board.currentPlayer().getLegalMoves()) {
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                final FreqTableRow row = new FreqTableRow(move);
-                this.freqTable[this.freqTableIndex] = row;
 
                 currentValue = board.currentPlayer().getPieceColor().isWhite() ?
                         min(moveTransition.getToBoard(), depth - 1) :
                         max(moveTransition.getToBoard(), depth - 1);
-
-                System.out.println("\t" + toString() + " analyzing move (" +moveCounter + "/" +numMoves+ ") " + move +
-                        " scores " + currentValue + " " +this.freqTable[this.freqTableIndex]);
-                this.freqTableIndex++;
 
                 if (board.currentPlayer().getPieceColor().isWhite() &&
                         currentValue > highestSeenValue) {
@@ -61,36 +50,16 @@ public final class MiniMax implements MoveStrategy {
                         currentValue < lowestSeenValue) {
                     lowestSeenValue = currentValue;
                     bestMove = move;
-                } else {
-                    System.out.println("\t" + toString() + " can't execute move (" +moveCounter+ "/" +numMoves+ ") " + move);
-                }
-                moveCounter++;
-            }
-            long executionTime = System.currentTimeMillis() - startTime;
-            System.out.printf("%s SELECTS %s [#boards = %d time taken = %d ms, rate = %.1f\n", board.currentPlayer(),
-                    bestMove, this.boardsEvaluated, executionTime, (1000 * ((double)this.boardsEvaluated/ executionTime)));
-            long total = 0;
-            for (final FreqTableRow row : this.freqTable) {
-                if(row != null) {
-                    total += row.getCount();
                 }
             }
-            if(this.boardsEvaluated != total) {
-                System.out.println("somethings wrong with the # of boards evaluated!");
-            }
+            executionTime = System.currentTimeMillis() - startTime;
         }
         return bestMove;
     }
 
     private int min(final Board board,
                     final int depth) {
-        if(depth == 0) {
-            this.boardsEvaluated++;
-            this.freqTable[this.freqTableIndex].increment();
-            return this.evaluator.evaluate(board, depth);
-        }
-
-        if(isEndGameScenario(board)) {
+        if(depth == 0 || isEndGameScenario(board)) {
             return this.evaluator.evaluate(board, depth);
         }
 
@@ -109,13 +78,7 @@ public final class MiniMax implements MoveStrategy {
 
     private int max(final Board board,
                     final int depth) {
-        if(depth == 0) {
-            this.boardsEvaluated++;
-            this.freqTable[this.freqTableIndex].increment();
-            return this.evaluator.evaluate(board, depth);
-        }
-
-        if(isEndGameScenario(board)) {
+        if(depth == 0 || isEndGameScenario(board)) {
             return this.evaluator.evaluate(board, depth);
         }
 
@@ -135,30 +98,5 @@ public final class MiniMax implements MoveStrategy {
     private static boolean isEndGameScenario(final Board board) {
         return  board.currentPlayer().isInCheckMate() ||
                 board.currentPlayer().isInStaleMate();
-    }
-
-    private static class FreqTableRow {
-
-        private final Move move;
-        private final AtomicLong count;
-
-        FreqTableRow(final Move move) {
-            this.count = new AtomicLong();
-            this.move = move;
-        }
-
-        long getCount() {
-            return this.count.get();
-        }
-
-        void increment() {
-            this.count.incrementAndGet();
-        }
-
-        @Override
-        public String toString() {
-            return BoardUtils.getPositionAtCoordinate(this.move.getCurrentCoordinate()) +
-                    BoardUtils.getPositionAtCoordinate(this.move.getDestinationCoordinate()) + " : " +this.count;
-        }
     }
 }

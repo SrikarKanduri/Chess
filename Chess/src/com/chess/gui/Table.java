@@ -24,9 +24,11 @@ import com.chess.engine.board.Tile;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.MoveTransition;
 import com.chess.engine.player.ai.AlphaBetaPruning;
+import com.chess.engine.player.ai.MiniMax;
 import com.chess.engine.player.ai.MoveStrategy;
 import com.chess.pgn.FenUtilities;
 import com.google.common.collect.Lists;
+import javafx.scene.control.Tab;
 
 public final class Table extends Observable {
 
@@ -72,15 +74,7 @@ public final class Table extends Observable {
         this.gameHistoryPanel = new GameHistoryPanel();
         this.takenPiecesPanel = new TakenPiecesPanel();
         this.boardPanel = new BoardPanel();
-
-        List<Double> scores = new ArrayList<>();
-        Random random = new Random();
-        int maxDataPoints = 40;
-        int maxScore = 10;
-        for (int i = 0; i < maxDataPoints; i++) {
-            scores.add(random.nextDouble() * maxScore);
-        }
-        this.graphPanel = new GraphPanel(scores);
+        this.graphPanel = new GraphPanel();
 
         this.moveLog = new MoveLog();
         this.addObserver(new TableGameAIWatcher());
@@ -122,6 +116,10 @@ public final class Table extends Observable {
 
     private TakenPiecesPanel getTakenPiecesPanel() {
         return this.takenPiecesPanel;
+    }
+
+    private GraphPanel getGraphPanel() {
+        return this.graphPanel;
     }
 
     private GameSetup getGameSetup() {
@@ -284,7 +282,9 @@ public final class Table extends Observable {
 
         final JCheckBoxMenuItem cbLegalMoveHighlighter = new JCheckBoxMenuItem(
                 "Highlight Legal Moves", true);
-        cbLegalMoveHighlighter.addActionListener(e -> highlightLegalMoves = cbLegalMoveHighlighter.isSelected());
+        cbLegalMoveHighlighter.addActionListener(e -> {
+            highlightLegalMoves = cbLegalMoveHighlighter.isSelected();
+        });
         preferencesMenu.add(cbLegalMoveHighlighter);
 
         return preferencesMenu;
@@ -377,8 +377,13 @@ public final class Table extends Observable {
         @Override
         protected Move doInBackground() throws Exception {
             final Move bestMove;
-            final MoveStrategy strategy = new AlphaBetaPruning(Table.get().getGameSetup().getSearchDepth());
+            final MoveStrategy strategy;
+            if(Table.get().getGameSetup().getAlgorithmType() == 0)
+                strategy = new MiniMax(Table.get().getGameSetup().getSearchDepth());
+            else
+                strategy = new AlphaBetaPruning(Table.get().getGameSetup().getSearchDepth());
             bestMove = strategy.execute(Table.get().getGameBoard());
+            Table.get().getGraphPanel().plotScore(Table.get().getGraphPanel().getLastScore() + strategy.getExecutionTime());
             return bestMove;
         }
 

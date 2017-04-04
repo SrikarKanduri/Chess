@@ -21,6 +21,7 @@ class GameSetup extends JDialog {
 
     private PlayerType whitePlayerType;
     private PlayerType blackPlayerType;
+    private int algorithmType;
     private JSpinner searchDepthSpinner;
 
     private static final String HUMAN_TEXT = "Human";
@@ -46,6 +47,14 @@ class GameSetup extends JDialog {
         blackGroup.add(blackComputerButton);
         blackHumanButton.setSelected(true);
 
+        final JRadioButton miniMaxButton = new JRadioButton("MiniMax");
+        final JRadioButton alphaBetaButton = new JRadioButton("AlphaBeta");
+
+        final ButtonGroup algorithmGroup = new ButtonGroup();
+        algorithmGroup.add(miniMaxButton);
+        algorithmGroup.add(alphaBetaButton);
+        miniMaxButton.setSelected(true);
+
         getContentPane().add(myPanel);
         myPanel.add(new JLabel("White"));
         myPanel.add(whiteHumanButton);
@@ -55,6 +64,8 @@ class GameSetup extends JDialog {
         myPanel.add(blackComputerButton);
 
         myPanel.add(new JLabel("Search"));
+        myPanel.add(miniMaxButton);
+        myPanel.add(alphaBetaButton);
         this.searchDepthSpinner = addLabeledSpinner(myPanel, "Search Depth", new SpinnerNumberModel(6, 0, Integer.MAX_VALUE, 1));
 
         final JButton cancelButton = new JButton("Cancel");
@@ -63,6 +74,7 @@ class GameSetup extends JDialog {
         okButton.addActionListener(e -> {
             whitePlayerType = whiteComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
             blackPlayerType = blackComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
+            algorithmType = miniMaxButton.isSelected()? 0 : 1;
             GameSetup.this.setVisible(false);
         });
 
@@ -91,6 +103,10 @@ class GameSetup extends JDialog {
         return getBlackPlayerType() == PlayerType.COMPUTER;
     }
 
+    int getAlgorithmType() {
+        return this.algorithmType;
+    }
+
     private PlayerType getWhitePlayerType() {
         return this.whitePlayerType;
     }
@@ -98,6 +114,8 @@ class GameSetup extends JDialog {
     private PlayerType getBlackPlayerType() {
         return this.blackPlayerType;
     }
+
+
 
     private static JSpinner addLabeledSpinner(Container c, String label, SpinnerModel model) {
         final JLabel l = new JLabel(label);

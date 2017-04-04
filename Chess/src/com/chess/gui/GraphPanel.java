@@ -15,10 +15,10 @@ public class GraphPanel extends JPanel {
     private static final Stroke GRAPH_STROKE = new BasicStroke(2f);
     private int pointWidth = 4;
     private int numberYDivisions = 10;
-    private List<Double> scores;
+    private List<Double> scores = new ArrayList<>();
 
-    public GraphPanel(List<Double> scores) {
-        this.scores = scores;
+    public GraphPanel() {
+        this.scores.add(Double.valueOf(0));
         this.setLayout(new BorderLayout());
         this.setPreferredSize(new Dimension(750, 400));
         this.setVisible(true);
@@ -129,13 +129,23 @@ public class GraphPanel extends JPanel {
         return maxScore;
     }
 
-    public void setScores(List<Double> scores) {
-        this.scores = scores;
+    public void plotScore(double score) {
+        this.scores.add(score);
         invalidate();
         this.repaint();
     }
 
-    public List<Double> getScores() {
-        return scores;
+    public Double getLastScore() {
+        return this.scores.get(this.scores.size()-1);
     }
+//
+//    public void setScores(List<Double> scores) {
+//        this.scores = scores;
+//        invalidate();
+//        this.repaint();
+//    }
+//
+//    public List<Double> getScores() {
+//        return scores;
+//    }
 }

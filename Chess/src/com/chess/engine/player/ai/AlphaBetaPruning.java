@@ -8,10 +8,16 @@ public final class AlphaBetaPruning implements MoveStrategy {
 
     private final BoardEvaluator evaluator;
     private final int depth;
+    private long executionTime;
 
     public AlphaBetaPruning(final int searchDepth) {
         this.evaluator = new StandardBoardEvaluator();
         this.depth = searchDepth;
+    }
+
+    @Override
+    public long getExecutionTime() {
+        return executionTime;
     }
 
     @Override
@@ -21,6 +27,7 @@ public final class AlphaBetaPruning implements MoveStrategy {
 
     @Override
     public Move execute(final Board board) {
+        final long startTime = System.currentTimeMillis();
         Move bestMove = null;
         int highestSeenValue = Integer.MIN_VALUE;
         int lowestSeenValue = Integer.MAX_VALUE;
@@ -43,6 +50,7 @@ public final class AlphaBetaPruning implements MoveStrategy {
                     bestMove = move;
                 }
             }
+            executionTime = System.currentTimeMillis() - startTime;
         }
         return bestMove;
     }
